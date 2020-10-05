@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/usr/share/nginx/html/
+      - ./nginx/conf.d/site.conf:/etc/nginx/conf.d/site.conf
+    links:
+      - php
+  php:
+    build:
+      context: .
+      dockerfile: ./php/Dockerfile
+    image: php:7.4-fpm-alpine
+    container_name: php
+    environment:
+      SERVICE_NAME: php
+    working_dir: /usr/share/nginx/html/
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./app:/usr/share/nginx/html/
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
